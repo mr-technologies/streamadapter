@@ -85,12 +85,12 @@ int main(int argc, char* argv[])
     for(const auto& chain_config : *it_chains)
     {
         const auto chain_handle = iff_create_chain(chain_config.dump().c_str(),
-                [](const char* const element_name, const int error_code)
+                [](const char* const element_name, const int error_code, void*)
                 {
                     std::ostringstream message;
                     message << "Chain element `" << element_name << "` reported an error: " << error_code;
-                    iff_log(IFF_LOG_LEVEL_ERROR, message.str().c_str());
-                });
+                    iff_log(IFF_LOG_LEVEL_ERROR, "streamadapter", message.str().c_str());
+                }, nullptr);
         chain_handles.push_back(chain_handle);
     }
     const auto total_chains = chain_handles.size();
@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    iff_log(IFF_LOG_LEVEL_ERROR, "Failed to switch GstPipeline into PLAYING state");
+                    iff_log(IFF_LOG_LEVEL_ERROR, "streamadapter", "Failed to switch GstPipeline into PLAYING state");
                 }
             }
             const auto width_in_bytes = BYTES_PER_PIXEL * metadata->width;
@@ -128,14 +128,14 @@ int main(int argc, char* argv[])
             {
                 std::ostringstream message;
                 message << "Ignoring invalid buffer: " << metadata->width << "x" << metadata->height << "+" << metadata->padding << " " << size << " bytes";
-                iff_log(IFF_LOG_LEVEL_WARNING, message.str().c_str());
+                iff_log(IFF_LOG_LEVEL_WARNING, "streamadapter", message.str().c_str());
                 return;
             }
             const auto buffer_size = width_in_bytes * metadata->height;
             GstBuffer* buffer = gst_buffer_new_allocate(0, buffer_size, nullptr);
             if(!buffer)
             {
-                iff_log(IFF_LOG_LEVEL_ERROR, "Failed to allocate GstBuffer");
+                iff_log(IFF_LOG_LEVEL_ERROR, "streamadapter", "Failed to allocate GstBuffer");
                 return;
             }
             if(metadata->padding == 0)
@@ -152,7 +152,7 @@ int main(int argc, char* argv[])
             const GstFlowReturn ret = gst_app_src_push_buffer(GST_APP_SRC(appsrc), buffer);
             if(ret != GST_FLOW_OK)
             {
-                iff_log(IFF_LOG_LEVEL_ERROR, "Failed to push GstBuffer");
+                iff_log(IFF_LOG_LEVEL_ERROR, "streamadapter", "Failed to push GstBuffer");
             }
         };
         const auto& chain_handle = chain_handles[i];
@@ -166,7 +166,7 @@ int main(int argc, char* argv[])
         iff_execute(chain_handle, nlohmann::json{{"exporter", {{"command", "on"}}}}.dump().c_str());
     }
 
-    iff_log(IFF_LOG_LEVEL_INFO, "Press Enter to terminate the program");
+    iff_log(IFF_LOG_LEVEL_INFO, "streamadapter", "Press Enter to terminate the program");
     std::getchar();
 
     for(const auto chain_handle : chain_handles)
