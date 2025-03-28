@@ -1,8 +1,8 @@
 # `streamadapter`
 
-`streamadapter` application demonstrates how to export images to the [GStreamer](https://gstreamer.freedesktop.org/) pipeline from IFF SDK.
-Application is located in `samples/05_gstreamer` directory of IFF SDK package.
-It comes with example configuration file (`streamadapter.json`) providing the following functionality:
+`streamadapter` application demonstrates how to export images to the [GStreamer](https://gstreamer.freedesktop.org/) pipeline from [MRTech IFF SDK](https://mr-te.ch/iff-sdk).
+It is located in `samples/05_gstreamer` directory of IFF SDK package.
+Application comes with example configuration file (`streamadapter.json`) providing the following functionality:
 
 * acquisition from XIMEA camera
 * color pre-processing on GPU:
