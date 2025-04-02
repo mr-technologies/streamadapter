@@ -163,7 +163,7 @@ int main(int argc, char* argv[])
                     (*export_function)(data, size, metadata);
                 },
                 &export_callbacks[i]);
-        iff_execute(chain_handle, nlohmann::json{{"exporter", {{"command", "on"}}}}.dump().c_str());
+        iff_execute(chain_handle, nlohmann::json{{"exporter", {{"command", "on"}}}}.dump().c_str(), [](const char*, void*){}, nullptr);
     }
 
     iff_log(IFF_LOG_LEVEL_INFO, "streamadapter", "Press Enter to terminate the program");
