@@ -14,7 +14,7 @@ Application comes with example configuration file (`streamadapter.json`) providi
   * gamma
   * image format conversion
 * automatic control of exposure time and white balance
-* image export to the client code
+* image export to the user code
 
 ## Usage
 
